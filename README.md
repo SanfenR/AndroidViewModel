@@ -1,4 +1,4 @@
-AndroidViewModel
+[AndroidViewModel](https://github.com/inloop/AndroidViewModel)
 ================
 
 Separating data and state handling from Fragments or Activities without lots of boilerplate-code. Reducing them to simple <i>dumb views</i>.
@@ -16,7 +16,7 @@ How to implement
 1. Create an interface for your <b>View</b> by extending [IView](library/src/main/java/eu/inloop/viewmodel/IView.java). We will call it IUserListView for this example.
 
    ```java
-   
+
   public interface IUserListView extends IView {
       public void showUsers(List<User> users);
   }
@@ -29,21 +29,21 @@ How to implement
    }
    ```
 3. Each <b>Fragment</b> or <b>Activity</b> that you would like to associate with a ViewModel will need either to extend [ViewModelActivityBase](library/src/main/java/eu/inloop/viewmodel/base/ViewModelBaseActivity.java)/[ViewModelBaseFragment](library/src/main/java/eu/inloop/viewmodel/base/ViewModelBaseFragment.java) or copy the implementation from these classes to your base activity/fragment class (in case you can't inherit directly). Override ```getViewModelClass()``` to return the corresponding ViewModel class. For example: <br/>
-  
+
    ```java
-   public class UserListFragment extends ViewModelBaseFragment<IUserListView, UserListViewModel> 
+   public class UserListFragment extends ViewModelBaseFragment<IUserListView, UserListViewModel>
       implements IUserListView {
-      
+
      @Override
       public Class<UserListViewModel> getViewModelClass() {
           return UserListViewModel.class;
       }
-      
+
    }
    ```
 
 4. Also each <b>Fragment</b> or <b>Activity</b> has to call ```setModelView()``` after the View (Fragment/Activity) was created and initialized. This is usually on the end of onViewCreated (or onCreate in case of an Activity) <br/>
-  
+
    ```java
    @Override
    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -51,8 +51,8 @@ How to implement
         ButterKnife.inject(this, view);
         setModelView(this);
    }
-   ```  
-  
+   ```
+
 How to use
 --------
 
@@ -61,7 +61,7 @@ You can forward user interaction from the View into the ViewModel simply by call
   ```java
   getViewModel().onDeleteUserClicked(userId);
   ```
-  
+
 The same goes for the opposite direction, when your asynchronous operation in the ViewModel finished and you would like to forward data to the View to show a list for example:
 
   ```java
@@ -72,11 +72,11 @@ The same goes for the opposite direction, when your asynchronous operation in th
 
 Your Fragment argument Bundle and Activity intent Bundle is forwarded to the ViewModel's onCreate method, which you can override to read the initial arguments for the ViewModel.
 
-   ```java 
+   ```java
    public void onCreate(Bundle arguments, Bundle savedInstanceState) {
       long userId = arguments.getInt("user_id", -1);
    }
-   ``` 
+   ```
 
 <b>How does it work?</b>
 
@@ -85,12 +85,12 @@ The ViewModel is discarded once the Fragment/Activity is not reachable anymore (
 
 <b>Why no controller layer?</b>
 
-This is not a strict MVC/MVP architecture - simply because we felt that having another layer between the "model" and the view does not bring enough advantages. So to further reduce the code this was simplified, where the Model is talking to the View over an interface. In mobile application most of the code is about interaction with the UI (getting data from API/DB, showing the data, manipulating, saving) so a more direct connection between the layers felt appropriate. 
+This is not a strict MVC/MVP architecture - simply because we felt that having another layer between the "model" and the view does not bring enough advantages. So to further reduce the code this was simplified, where the Model is talking to the View over an interface. In mobile application most of the code is about interaction with the UI (getting data from API/DB, showing the data, manipulating, saving) so a more direct connection between the layers felt appropriate.
 
 <b>Sample Workflow</b>:
 
 1. <small>Fragment is shown to user. A ViewModel is assigned.</small>
-2. Fragment notifies the View that it's ready. 
+2. Fragment notifies the View that it's ready.
 3. ViewModel starts the async task to load data. Tells the view to show progress.
 4. User rotates the display. The ViewModel continues with the loading part.
 5. The Fragment is recreated after the orientation change is assigned the same ViewModel instance.

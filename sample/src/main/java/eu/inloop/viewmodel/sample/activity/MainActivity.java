@@ -3,7 +3,6 @@ package eu.inloop.viewmodel.sample.activity;
 import android.os.Bundle;
 
 import butterknife.ButterKnife;
-import eu.inloop.viewmodel.base.ViewModelBaseActivity;
 import eu.inloop.viewmodel.base.ViewModelBaseEmptyActivity;
 import eu.inloop.viewmodel.sample.R;
 import eu.inloop.viewmodel.sample.fragment.UserListFragment;
@@ -18,7 +17,10 @@ public class MainActivity extends ViewModelBaseEmptyActivity {
         ButterKnife.inject(this);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.root_content, new UserListFragment(), "user-list-fragment").commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.root_content, new UserListFragment(), "user-list-fragment")
+                    .commit();
         }
     }
 
